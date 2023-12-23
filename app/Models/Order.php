@@ -20,4 +20,9 @@ class Order extends Model
                      ->values()
                      ->toArray();
     }
+
+    public function scopeGetYearOrders(Builder $query,  int $year)
+    {
+        return $query->whereYear('created_at', $year);
+    }
 }
