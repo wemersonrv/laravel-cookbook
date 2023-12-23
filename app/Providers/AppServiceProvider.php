@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Announcement;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        view()->composer('layouts.app-layout', function($view) {
+            $announcement = Announcement::first();
+
+            $view->with([
+                'bannerText' => $announcement?->banner_text,
+                'bannerColor' => $announcement?->banner_color,
+                'isActive' => $announcement?->is_active,
+            ]);
+        });
     }
 }
