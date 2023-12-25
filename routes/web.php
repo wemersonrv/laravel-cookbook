@@ -1,10 +1,9 @@
 <?php
 
 use App\Models\Announcement;
-use App\Models\Order;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Intervention\Image\Facades\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +57,22 @@ Route::patch('/announcement/update', function (Request $request) {
       'button_text' => 'required',
       'button_color' => 'required',
       'button_link' => 'required|url',
+      'image_upload' => 'file|image|max:20000',
     ]);
+
+    if($request->image_upload){
+        $uploaded = $request->file('image_upload');
+        $path = config('filesystems.disks.public.root') . '/' . $uploaded->hashName();
+
+        Image::make($uploaded)
+            ->resize(600,null, function($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })
+            ->save($path);
+
+        $fields = array_merge($fields, [ 'image_upload' => $uploaded->hashName()]);
+    }
 
     $announcement = Announcement::first();
     $announcement->update($fields);

@@ -5,7 +5,11 @@
         </div>
         <div class="text-gray-600 px-5 py-5">
 
-            <div class="content">{!! $announcement->content !!}</div>
+            @if($announcement->image_upload)
+                <img src="{{ asset('storage/'.$announcement->image_upload) }}" alt="image" class="mx-auto">
+            @endif
+
+            <div class="content">{!! $announcement->content !!}</div>voc
 
             <p class="mt-6 mx-auto">
                 <a class="bg-purple-800 text-white inline-block rounded-xl font-semibold px-8 py-4"

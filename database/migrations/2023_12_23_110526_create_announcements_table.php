@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('button_text');
             $table->string('button_link');
             $table->string('button_color');
+            $table->string('image_upload')->nullable();
             $table->timestamps();
         });
 

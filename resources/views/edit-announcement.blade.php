@@ -5,10 +5,25 @@
         </div>
     @endif
 
+    @if(session('errors'))
+        <div class="bg-red-200 text-red-700 px-4 py-2">
+            <ul class="list-disc ml-4">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="bg-white rounded-md border my-8 px-6 py-6">
         <div>
             <h2 class="text-2xl font-semibold">Edit Announcement</h2>
-            <form action="/announcement/update" method="POST" class="max-w-2xl mt-4" id="updateAnnouncement">
+            <form enctype="multipart/form-data"
+                  action="/announcement/update"
+                  method="POST"
+                  class="max-w-2xl mt-4"
+                  id="updateAnnouncement"
+            >
                 @csrf
                 @method('PATCH')
                 <div>
@@ -123,6 +138,22 @@
                            required
                     >
                 </div>
+
+                <div class="mt-4">
+                    <label for="image_upload" class="font-semibold block">Image Upload</label>
+                    <input class="mt-2"
+                           type="file"
+                           name="image_upload"
+                           id="image_upload"
+                           value="{{ $announcement->image_upload }}"
+                           accept="image/*"
+                    >
+                </div>
+                @if($announcement->image_upload)
+                    <div class="mt-4">
+                        <img src="{{ asset('storage/'.$announcement->image_upload) }}" alt="image" class="max-w-xs">
+                    </div>
+                @endif
 
                 <div class="mt-8">
                     <button type="submit"
