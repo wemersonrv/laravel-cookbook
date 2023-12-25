@@ -3,6 +3,8 @@
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 /*
@@ -58,11 +60,13 @@ Route::patch('/announcement/update', function (Request $request) {
       'button_color' => 'required',
       'button_link' => 'required|url',
       'image_upload' => 'file|image|max:20000',
+      'image_upload_filepond' => 'string|nullable',
     ]);
 
     if($request->image_upload){
         $uploaded = $request->file('image_upload');
-        $path = config('filesystems.disks.public.root') . '/' . $uploaded->hashName();
+        $filename = 'images/' . $uploaded->hashName();
+        $path = config('filesystems.disks.public.root') . '/' . $filename;
 
         Image::make($uploaded)
             ->resize(600,null, function($constraint) {
@@ -71,11 +75,25 @@ Route::patch('/announcement/update', function (Request $request) {
             })
             ->save($path);
 
-        $fields = array_merge($fields, [ 'image_upload' => $uploaded->hashName()]);
+        $fields = array_merge($fields, [ 'image_upload' => $filename ]);
+    }
+
+    if($request->image_upload_filepond) {
+        $filename = 'images/' . Str::after($request->image_upload_filepond, 'temp/');
+        Storage::disk('public')->move($request->image_upload_filepond, $filename);
+        $fields = array_merge($fields, [ 'image_upload_filepond' => $filename ]);
     }
 
     $announcement = Announcement::first();
     $announcement->update($fields);
 
     return back()->with('success_message', 'Announcement was updated!');
+});
+
+Route::post('/upload', function (Request $request) {
+    if($request->image_upload_filepond) {
+        $path = $request->file('image_upload_filepond')->store('temp', 'public');
+    }
+
+    return $path;
 });

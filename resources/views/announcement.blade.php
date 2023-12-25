@@ -9,6 +9,10 @@
                 <img src="{{ asset('storage/'.$announcement->image_upload) }}" alt="image" class="mx-auto">
             @endif
 
+            @if($announcement->image_upload_filepond)
+                <img src="{{ asset('storage/'.$announcement->image_upload_filepond) }}" alt="image" class="mx-auto">
+            @endif
+
             <div class="content">{!! $announcement->content !!}</div>voc
 
             <p class="mt-6 mx-auto">
