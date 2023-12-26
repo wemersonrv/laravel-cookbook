@@ -139,6 +139,10 @@ Route::patch('/posts/{post}', function (Post $post, PostFormRequest $request) {
     return redirect('/posts/'.$post->id)->with('success_message', 'Post was updated!');
 });
 
+Route::get('/drag-drop', function () {
+    return view('drag-drop');
+});
+
 
 function fields(Request $request)
 {
